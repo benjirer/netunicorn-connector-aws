@@ -312,7 +312,6 @@ class AWSFargate(NetunicornConnectorProtocol):
             container_def = {
                 "name": deployment.executor_id,
                 "essential": True,
-                "image": deployment.environment_definition.image,
                 "logConfiguration": {
                     "logDriver": "awslogs",
                     "options": {
@@ -322,6 +321,7 @@ class AWSFargate(NetunicornConnectorProtocol):
                         "awslogs-stream-prefix": "awslogs-london"
                     }
                 },
+                "image": deployment.environment_definition.image,
                 "environment": [
                     {"name": key, "value": value}
                     for key, value in deployment.environment_definition.runtime_context.environment_variables.items()
