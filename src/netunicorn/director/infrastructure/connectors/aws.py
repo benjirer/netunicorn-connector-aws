@@ -313,6 +313,15 @@ class AWSFargate(NetunicornConnectorProtocol):
                 "name": deployment.executor_id,
                 "essential": True,
                 "image": deployment.environment_definition.image,
+                "logConfiguration": {
+                    "logDriver": "awslogs",
+                    "options": {
+                        "awslogs-create-group": "true",
+                        "awslogs-group": "awslogs-video-streaming",
+                        "awslogs-region": "eu-west-2",
+                        "awslogs-stream-prefix": "awslogs-london"
+                    }
+                }
                 "environment": [
                     {"name": key, "value": value}
                     for key, value in deployment.environment_definition.runtime_context.environment_variables.items()
