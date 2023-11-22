@@ -321,7 +321,7 @@ class AWSFargate(NetunicornConnectorProtocol):
                         "awslogs-region": "eu-west-2",
                         "awslogs-stream-prefix": "awslogs-london"
                     }
-                }
+                },
                 "environment": [
                     {"name": key, "value": value}
                     for key, value in deployment.environment_definition.runtime_context.environment_variables.items()
