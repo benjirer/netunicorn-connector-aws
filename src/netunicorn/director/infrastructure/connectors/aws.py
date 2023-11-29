@@ -321,9 +321,6 @@ class AWSFargate(NetunicornConnectorProtocol):
                 #         "awslogs-stream-prefix": "awslogs-london"
                 #     }
                 # },
-                "ephemeralStorage": {
-                    "sizeInGiB": 50  # Adjust this value up to 200 GiB as needed
-                },
                 "image": deployment.environment_definition.image,
                 "environment": [
                     {"name": key, "value": value}
@@ -333,6 +330,7 @@ class AWSFargate(NetunicornConnectorProtocol):
 
             parameters = {
                 "family": f"experiment-{experiment_id}",
+                "ephemeralStorage": {"sizeInGiB": 100 },
                 "networkMode": "awsvpc",
                 "containerDefinitions": [container_def],
                 "runtimePlatform": {
