@@ -312,14 +312,17 @@ class AWSFargate(NetunicornConnectorProtocol):
             container_def = {
                 "name": deployment.executor_id,
                 "essential": True,
-                "logConfiguration": {
-                    "logDriver": "awslogs",
-                    "options": {
-                        "awslogs-create-group": "true",
-                        "awslogs-group": "awslogs-video-streaming",
-                        "awslogs-region": "eu-west-2",
-                        "awslogs-stream-prefix": "awslogs-london"
-                    }
+                # "logConfiguration": {
+                #     "logDriver": "awslogs",
+                #     "options": {
+                #         "awslogs-create-group": "true",
+                #         "awslogs-group": "awslogs-video-streaming",
+                #         "awslogs-region": "eu-west-2",
+                #         "awslogs-stream-prefix": "awslogs-london"
+                #     }
+                # },
+                "ephemeralStorage": {
+                    "sizeInGiB": 50  # Adjust this value up to 200 GiB as needed
                 },
                 "image": deployment.environment_definition.image,
                 "environment": [
