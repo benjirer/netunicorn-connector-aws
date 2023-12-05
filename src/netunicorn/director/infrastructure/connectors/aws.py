@@ -312,25 +312,22 @@ class AWSFargate(NetunicornConnectorProtocol):
             container_def = {
                 "name": deployment.executor_id,
                 "essential": True,
-                # "logConfiguration": {
-                #     "logDriver": "awslogs",
-                #     "options": {
-                #         "awslogs-create-group": "true",
-                #         "awslogs-group": "awslogs-video-streaming",
-                #         "awslogs-region": "eu-west-2",
-                #         "awslogs-stream-prefix": "awslogs-london"
-                #     }
-                # },
                 "image": deployment.environment_definition.image,
                 "environment": [
                     {"name": key, "value": value}
                     for key, value in deployment.environment_definition.runtime_context.environment_variables.items()
                 ],
+                "portMappings": [
+                    {
+                        "containerPort": 8080,
+                        "hostPort": 8080,
+                        "protocol": "tcp"
+                    }
+                ],
             }
 
             parameters = {
                 "family": f"experiment-{experiment_id}",
-                "ephemeralStorage": {"sizeInGiB": 100 },
                 "networkMode": "awsvpc",
                 "containerDefinitions": [container_def],
                 "runtimePlatform": {
@@ -349,6 +346,10 @@ class AWSFargate(NetunicornConnectorProtocol):
                 parameters["memory"] = str(
                     deployment.node.properties.get("memory", 512)
                 )
+            if "ephemeralStorage" in deployment.node.properties:
+                parameters["ephemeralStorage"] = {
+                    "sizeInGiB": deployment.node.properties.get("ephemeralStorage", 50)
+                }
 
             response = self.ecs_client.register_task_definition(**parameters)
             self.logger.debug(
