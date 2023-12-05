@@ -327,8 +327,8 @@ class AWSFargate(NetunicornConnectorProtocol):
                 # ],
                 "portMappings": [
                     {
-                        "containerPort": 80,
-                        "hostPort": 80,
+                        "containerPort": 8080,
+                        "hostPort": 8080,
                         "protocol": "tcp"
                     },
                     {
@@ -346,6 +346,7 @@ class AWSFargate(NetunicornConnectorProtocol):
 
             parameters = {
                 "family": f"experiment-{experiment_id}",
+                "ephemeralStorage": {"sizeInGiB": 100 },
                 "networkMode": "awsvpc",
                 "containerDefinitions": [container_def],
                 "runtimePlatform": {
@@ -364,10 +365,10 @@ class AWSFargate(NetunicornConnectorProtocol):
                 parameters["memory"] = str(
                     deployment.node.properties.get("memory", 512)
                 )
-            if "ephemeralStorage" in deployment.node.properties:
-                parameters["ephemeralStorage"] = {
-                    "sizeInGiB": deployment.node.properties.get("ephemeralStorage", 50)
-                }
+            # if "ephemeralStorage" in deployment.node.properties:
+            #     parameters["ephemeralStorage"] = {
+            #         "sizeInGiB": deployment.node.properties.get("ephemeralStorage", 50)
+            #     }
 
             response = self.ecs_client.register_task_definition(**parameters)
             self.logger.debug(
