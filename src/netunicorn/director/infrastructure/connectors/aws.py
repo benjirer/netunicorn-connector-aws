@@ -319,10 +319,11 @@ class AWSFargate(NetunicornConnectorProtocol):
                 ],
                 "portMappings": [
                     {
-                        "containerPort": 8080,
-                        "hostPort": 8080,
+                        "containerPort": container_port,
+                        "hostPort": host_port,
                         "protocol": "tcp"
                     }
+                    for container_port, host_port in deployment.environment_definition.runtime_context.ports_mapping.items()
                 ],
             }
 
