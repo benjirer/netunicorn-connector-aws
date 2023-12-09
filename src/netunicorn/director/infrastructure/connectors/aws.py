@@ -327,23 +327,14 @@ class AWSFargate(NetunicornConnectorProtocol):
                 # ],
             }
 
-            if deployment.environment_definition.image == "benjirer/server:augmented":
+            if "ports_mapping" in deployment.environment_definition:
                 container_def["portMappings"] = [
                     {
-                        "containerPort": 8080,
-                        "hostPort": 8080,
-                        "protocol": "tcp"
-                    },
-                    {
-                        "containerPort": 50000,
-                        "hostPort": 50000,
-                        "protocol": "tcp"
-                    },
-                    {
-                        "containerPort": 50001,
-                        "hostPort": 50001,
+                        "containerPort": port,
+                        "hostPort": deployment.environment_definition["ports_mapping"][port],
                         "protocol": "tcp"
                     }
+                    for port in deployment.environment_definition["ports_mapping"]
                 ]
             
             parameters = {
