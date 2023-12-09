@@ -307,7 +307,7 @@ class AWSFargate(NetunicornConnectorProtocol):
             ] = self.netunicorn_gateway
             deployment.environment_definition.runtime_context.environment_variables[
                 "NETUNICORN_EXPERIMENT_ID"
-            ] = experiment_id
+            ] = experiment_id                
 
             container_def = {
                 "name": deployment.executor_id,
@@ -317,23 +317,35 @@ class AWSFargate(NetunicornConnectorProtocol):
                     {"name": key, "value": value}
                     for key, value in deployment.environment_definition.runtime_context.environment_variables.items()
                 ],
-                "portMappings": [
-                    {
-                        "containerPort": container_port,
-                        "hostPort": host_port,
-                        "protocol": "tcp"
-                    }
-                    for container_port, host_port in deployment.environment_definition.runtime_context.ports_mapping.items()
-                ],
                 # "portMappings": [
                 #     {
-                #         "containerPort": 8080,
-                #         "hostPort": 8080,
+                #         "containerPort": container_port,
+                #         "hostPort": host_port,
                 #         "protocol": "tcp"
-                #     },
+                #     }
+                #     for container_port, host_port in deployment.environment_definition.runtime_context.ports_mapping.items()
                 # ],
             }
 
+            if deployment.environment_definition.image == "benjirer/server:augmented":
+                container_def["portMappings"] = [
+                    {
+                        "containerPort": 8080,
+                        "hostPort": 8080,
+                        "protocol": "tcp"
+                    },
+                    {
+                        "containerPort": 50000,
+                        "hostPort": 50000,
+                        "protocol": "tcp"
+                    },
+                    {
+                        "containerPort": 50001,
+                        "hostPort": 50001,
+                        "protocol": "tcp"
+                    }
+                ]
+            
             parameters = {
                 "family": f"experiment-{experiment_id}",
                 "ephemeralStorage": {"sizeInGiB": 100 },
