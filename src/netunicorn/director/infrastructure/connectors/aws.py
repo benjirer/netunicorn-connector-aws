@@ -317,31 +317,21 @@ class AWSFargate(NetunicornConnectorProtocol):
                     {"name": key, "value": value}
                     for key, value in deployment.environment_definition.runtime_context.environment_variables.items()
                 ],
-                "portMappings": [
-                    {
-                        "containerPort": container_port,
-                        "hostPort": host_port,
-                        "protocol": "tcp"
-                    }
-                    for container_port, host_port in deployment.environment_definition.runtime_context.ports_mapping.items()
-                ],
                 # "portMappings": [
                 #     {
-                #         "containerPort": 8080,
-                #         "hostPort": 8080,
-                #         "protocol": "tcp"
-                #     },
-                #     {
-                #         "containerPort": 50001,
-                #         "hostPort": 50001,
-                #         "protocol": "tcp"
-                #     },
-                #     {
-                #         "containerPort": 50000,
-                #         "hostPort": 50000,
+                #         "containerPort": container_port,
+                #         "hostPort": host_port,
                 #         "protocol": "tcp"
                 #     }
+                #     for container_port, host_port in deployment.environment_definition.runtime_context.ports_mapping.items()
                 # ],
+                "portMappings": [
+                    {
+                        "containerPort": 8080,
+                        "hostPort": 8080,
+                        "protocol": "tcp"
+                    },
+                ],
             }
 
             parameters = {
