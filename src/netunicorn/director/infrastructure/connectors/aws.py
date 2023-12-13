@@ -344,7 +344,7 @@ class AWSFargate(NetunicornConnectorProtocol):
 
             parameters = {
                 "family": f"experiment-{experiment_id}",
-                "ephemeralStorage": {"sizeInGiB": 100},
+                "ephemeralStorage": {"sizeInGiB": 30},
                 "networkMode": "awsvpc",
                 "containerDefinitions": [container_def],
                 "runtimePlatform": {
