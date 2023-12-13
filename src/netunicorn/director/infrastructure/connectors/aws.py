@@ -120,7 +120,9 @@ class AWSFargate(NetunicornConnectorProtocol):
                     self.ecs_client.delete_task_definitions(
                         taskDefinitions=definitions["taskDefinitionArns"]
                     )
-                    self.logger.debug(f"Cleaned {len(definitions['taskDefinitionArns'])} stopped containers")
+                    self.logger.debug(
+                        f"Cleaned {len(definitions['taskDefinitionArns'])} stopped containers"
+                    )
             except Exception as e:
                 self.logger.error(f"Failed to clean task definitions: {e}")
             await asyncio.sleep(300)
@@ -167,7 +169,6 @@ class AWSFargate(NetunicornConnectorProtocol):
         vpc.create_tags(Tags=[{"Key": "netunicorn", "Value": "default"}])
         subnet = vpc.create_subnet(CidrBlock="10.113.0.0/16")
 
-
         create_ig_response = ec2_client.create_internet_gateway()
         ig_id = create_ig_response["InternetGateway"]["InternetGatewayId"]
         vpc.attach_internet_gateway(InternetGatewayId=ig_id)
@@ -183,7 +184,9 @@ class AWSFargate(NetunicornConnectorProtocol):
 
     def _create_node_template(self, configuration: Optional[list[dict]]) -> None:
         if not configuration:
-            self.logger.warning("No node configuration provided, using default AMD64 Linux node with 1 vCPU and 2GB RAM")
+            self.logger.warning(
+                "No node configuration provided, using default AMD64 Linux node with 1 vCPU and 2GB RAM"
+            )
             self.node_template = [
                 Node(
                     name=f"aws-fargate-default-",
@@ -200,7 +203,8 @@ class AWSFargate(NetunicornConnectorProtocol):
         self.node_template = [
             Node(
                 name=configuration[i].get("name", f"aws-fargate-{i}-"),
-                properties=deepcopy(configuration[i].get("properties", {})) | {
+                properties=deepcopy(configuration[i].get("properties", {}))
+                | {
                     "netunicorn-environments": {"DockerImage"},
                 },
                 architecture=(
@@ -307,7 +311,7 @@ class AWSFargate(NetunicornConnectorProtocol):
             ] = self.netunicorn_gateway
             deployment.environment_definition.runtime_context.environment_variables[
                 "NETUNICORN_EXPERIMENT_ID"
-            ] = experiment_id                
+            ] = experiment_id
 
             container_def = {
                 "name": deployment.executor_id,
@@ -329,26 +333,18 @@ class AWSFargate(NetunicornConnectorProtocol):
 
             if deployment.environment_definition.image == "benjirer/server:augmented":
                 container_def["portMappings"] = [
-                    {
-                        "containerPort": 8080,
-                        "hostPort": 8080,
-                        "protocol": "tcp"
-                    },
-                    {
-                        "containerPort": 50000,
-                        "hostPort": 50000,
-                        "protocol": "tcp"
-                    },
-                    {
-                        "containerPort": 50001,
-                        "hostPort": 50001,
-                        "protocol": "tcp"
-                    }
+                    {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"},
+                    {"containerPort": 50000, "hostPort": 50000, "protocol": "tcp"},
+                    {"containerPort": 50001, "hostPort": 50001, "protocol": "tcp"},
+                    {"containerPort": 50002, "hostPort": 50002, "protocol": "tcp"},
+                    {"containerPort": 50003, "hostPort": 50003, "protocol": "tcp"},
+                    {"containerPort": 50004, "hostPort": 50004, "protocol": "tcp"},
+                    {"containerPort": 50005, "hostPort": 50005, "protocol": "tcp"},
                 ]
-            
+
             parameters = {
                 "family": f"experiment-{experiment_id}",
-                "ephemeralStorage": {"sizeInGiB": 100 },
+                "ephemeralStorage": {"sizeInGiB": 100},
                 "networkMode": "awsvpc",
                 "containerDefinitions": [container_def],
                 "runtimePlatform": {
@@ -412,7 +408,9 @@ class AWSFargate(NetunicornConnectorProtocol):
             self.ecs_client.deregister_task_definition(
                 taskDefinition=task_definition_arn
             )
-            self.logger.debug(f"Successfully ran task for deployment {deployment.executor_id}")
+            self.logger.debug(
+                f"Successfully ran task for deployment {deployment.executor_id}"
+            )
             return Success(None)
         except Exception as e:
             self.logger.exception(e)
