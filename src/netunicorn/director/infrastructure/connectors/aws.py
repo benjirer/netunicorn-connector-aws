@@ -396,6 +396,7 @@ class AWSFargate(NetunicornConnectorProtocol):
                         "assignPublicIp": "ENABLED",
                     }
                 },
+                enableExecuteCommand=True,
                 tags=[
                     {"key": "netunicorn-experiment-id", "value": experiment_id},
                     {"key": "netunicorn-executor-id", "value": deployment.executor_id},
