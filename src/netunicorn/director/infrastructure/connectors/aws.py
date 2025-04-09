@@ -334,6 +334,7 @@ class AWSFargate(NetunicornConnectorProtocol):
                     "options": {
                         "awslogs-group": "/ecs/netunicorn",
                         "awslogs-region": self.default_region,
+                        "awslogs-stream-prefix": "netunicorn",
                     },
                 },
             }
