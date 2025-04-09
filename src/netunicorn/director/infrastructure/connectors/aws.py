@@ -352,6 +352,7 @@ class AWSFargate(NetunicornConnectorProtocol):
 
             parameters = {
                 "family": f"experiment-{experiment_id}",
+                "executionRoleArn": "arn:aws:iam::749220858313:role/logger",
                 "ephemeralStorage": {"sizeInGiB": 50},
                 "networkMode": "awsvpc",
                 "containerDefinitions": [container_def],
