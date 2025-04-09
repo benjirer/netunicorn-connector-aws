@@ -329,6 +329,13 @@ class AWSFargate(NetunicornConnectorProtocol):
                 #     }
                 #     for container_port, host_port in deployment.environment_definition.runtime_context.ports_mapping.items()
                 # ],
+                "logConfiguration": {
+                    "logDriver": "awslogs",
+                    "options": {
+                        "awslogs-group": "/ecs/netunicorn",
+                        "awslogs-region": self.default_region,
+                    },
+                },
             }
 
             if deployment.environment_definition.image == "benjirer/server:augmented":
